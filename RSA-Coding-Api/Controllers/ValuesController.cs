@@ -16,17 +16,28 @@ namespace RSA_Coding_Api.Controllers
 
         [HttpPost, Route("decodeMsg")]
         public ActionResult<string> decodeMessg([FromBody]string code)
-            => decode(code.Split(" ").AsEnumerable(), d, n);
+        {
+            string res = String.Empty;
+            try
+            {
+                res = decode(code.Split(" ").AsEnumerable(), d, n);
+            }
+            catch (Exception ex)
+            {
+                res = ex.Message;
+            }
+            return res;
+        }
 
         public Func<IEnumerable<string>, long, long, string> decode = (msgCollection, d, n) =>
             String.Concat(msgCollection
-                .Select(msg => 
+                .Select(msg =>
                 characters[
                     Convert.ToInt32(
                         (BigInteger.Pow(
                             new BigInteger(
                                 Convert.ToDouble(msg)
-                                ),(int)d
+                                ), (int)d
                             ) % new BigInteger((int)n)).ToString()
                         )
                     ].ToString()
